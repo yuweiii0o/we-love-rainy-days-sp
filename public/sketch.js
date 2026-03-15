@@ -156,7 +156,7 @@ trails[id].shift();
 // DRAW TRAILS
 function drawTrails(){
 
-textSize(34);
+textSize(40);
 
 for(let id in trails){
 
