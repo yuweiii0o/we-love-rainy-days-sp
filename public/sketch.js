@@ -15,6 +15,12 @@ let rainCount = 200;
 let glowPlayers = {};
 let glowDuration = 20;
 
+// trail system
+let trails = {};
+let trailSpacing = 4;   
+let trailLength = 12;   
+let frameCounter = 0;
+
 function setup(){
 
 createCanvas(window.innerWidth, window.innerHeight);
@@ -62,8 +68,16 @@ function draw(){
 
 background(0);
 
+frameCounter++;
+
 // draw rain
 drawRain();
+
+// update trails
+updateTrails();
+
+// draw trails
+drawTrails();
 
 // draw players
 drawPlayers();
@@ -107,6 +121,62 @@ r.y += r.speed;
 if(r.y > height){
 r.y = -20;
 r.x = random(width);
+}
+
+}
+
+}
+
+// TRAIL UPDATE
+function updateTrails(){
+
+if(frameCounter % trailSpacing !== 0) return;
+
+for(let id in players){
+
+let p = players[id];
+
+if(!trails[id]){
+trails[id] = [];
+}
+
+trails[id].push({
+x:p.x,
+y:p.y
+});
+
+if(trails[id].length > trailLength){
+trails[id].shift();
+}
+
+}
+
+}
+
+// DRAW TRAILS
+function drawTrails(){
+
+textSize(34);
+
+for(let id in trails){
+
+let trail = trails[id];
+
+for(let i=0;i<trail.length;i++){
+
+let t = trail[i];
+
+let alpha = map(i,0,trail.length,150,220);
+
+push();
+
+noStroke();
+fill(255,alpha);
+
+text("💧",t.x,t.y);
+
+pop();
+
 }
 
 }
@@ -209,7 +279,6 @@ if(d < 45){
 
 collisionCooldown = 30;
 
-// mark users
 glowPlayers[ids[i]] = glowDuration;
 glowPlayers[ids[j]] = glowDuration;
 
